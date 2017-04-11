@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Frosh IMs
+{% endblock %}
+
+{% block body %}
+<h1>Форма подачі заявки на підлючення Інтернет</h1>
+<form action="{{ url_for('register') }}" method="post">
+    Введіть номер телефона в форматі: 0432ХХХХХХ
+    <br/>
+    Телефон: <input name="tel" type="text"/>
+    <br/>
+    Контактна особа: <input name="kontakt" type="text"/>
+    <br/>
+    Контактний телефон: <input name="mobile" type="text"/>
+    <br/>
+    Email: <input name="mail" type="text"/>
+    <br/>
+    <input type="submit" value="Register"/>
+</form>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <h2>Вхід у систему управління </h2>
+    <div class="control-group">
+        <div class="controls">
+          <input type="text" id="login" name="login" class="input-xlarge"
+            placeholder="Введіть логін" required>
+        </div>
+    </div>
+ 
+    <div class="control-group">
+        <div class="controls">
+          <input type="password" id="password" name="password" class="input-xlarge"
+            placeholder="Введіть пароль" required>
+        </div>
+    </div>
+    
+    <div class="control-group">
+        <div class="controls">
+          <input type="radio" id="remember" class="input-xlarge">Запам'ятати мене</input>
+        </div>
+    </div>
+ 
+    <div class="control-group">
+        <div class="controls">
+          <button type="submit" class="btn btn-success">Увійти</button>
+        </div>
+    </div>
+  </form>
+{% endblock %}

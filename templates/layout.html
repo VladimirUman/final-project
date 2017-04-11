@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta content="initial-scale=1, width=device-width" name="viewport"/>
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li class="active"><a href="/">Home</a></li>
+                {% if g.user.is_authenticated%}
+                    <li><a href="/new">New Todo</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% endif %}
+                {% if not g.user.is_authenticated%}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </body>
+</html>

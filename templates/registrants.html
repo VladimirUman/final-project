@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    registrants
+{% endblock %}
+
+{% block body %}
+<ul>
+    {% for registrant in registrants %}
+        <li>{{ registrant.tel }} {{ registrant.kontakt }} {{ registrant.mobile }} {{ registrant.mail }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
