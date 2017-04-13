@@ -9,14 +9,12 @@
         {% block body %}{% endblock %}
         <div class="nav-collapse collapse">
             <ul class="nav">
-                <li class="active"><a href="/">Home</a></li>
                 {% if g.user.is_authenticated%}
-                    <li><a href="/new">New Todo</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a> Вітаємо! {{ g.user }} </a></li>
+                    <li><a {{ g.user }} href="{{ url_for('logout') }}">Вийти з системи</a></li>
                 {% endif %}
                 {% if not g.user.is_authenticated%}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                    <li><a href="{{ url_for('login') }}">Увійти в систему</a></li>
                 {% endif %}
             </ul>
         </div>

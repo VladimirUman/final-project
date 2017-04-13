@@ -1,16 +1,15 @@
 from flask import Flask, render_template, redirect, request, url_for, flash, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user , logout_user , current_user , login_required
+from functools import wraps
 
 app = Flask(__name__)
 
 app.secret_key = 'super secret key'
-app.config['SESSION_TYPE'] = 'filesystem'
-
-#in_user = current_user
+#app.config['SESSION_TYPE'] = 'filesystem'
 
 # Flask-SQLAlchemy
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///froshims3.db"
 app.config["SQLALCHEMY_ECHO"] = True
 db = SQLAlchemy(app)
@@ -18,6 +17,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
 
 class Registrant(db.Model):
 
@@ -42,26 +42,36 @@ class Users(db.Model):
     password = db.Column(db.Text)
     role = db.Column(db.Text)
 
-    def __init__(self, login, password, role):
+    def __init__(self, login, password, role, mail):
         self.login = login
         self.password = password
         self.role = role
         
+    def get_role(self):
+        return self.role
+    
     def is_authenticated(self):
         return True
  
     def is_active(self):
         return True
- 
-    def is_anonymous(self):
-        return False
- 
+
     def get_id(self):
         return str(self.id)
- 
+    
     def __repr__(self):
-        return '<User %r>' % (self.username)
-        
+        return '%s' % (self.login)
+
+def required_roles(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if current_user.get_role() not in roles:
+                return redirect(url_for('main'))
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
+ 
 @app.route("/")
 def main():
     return render_template("main.html")
@@ -123,6 +133,7 @@ def logout():
 
 @app.route("/panel", methods=["GET", "POST"])
 @login_required
+@required_roles('admin')
 def panel():    
     if request.method == "GET":
         rows = Users.query.all()
@@ -135,13 +146,15 @@ def panel():
 
 @app.route("/adduserform")
 @login_required
+@required_roles('admin')
 def adduserform():
     return render_template("adduserform.html")
 
 @app.route("/adduser", methods=["POST"])
 @login_required
+@required_roles('admin')
 def adduser():
-    if request.form["login"] == "" or request.form["password"] == "" or request.form["role"] == "":
+    if request.form["login"] == "" or request.form["password"] == "":
         return render_template("failure.html")
     user = Users(request.form["login"], request.form["password"], request.form["role"])
     db.session.add(user)

@@ -8,7 +8,7 @@
     <form action="{{ url_for('panel') }}" method="post">
         <ul>
             {% for user in users %}
-                <li><input name="id" type="radio" value="{{ user.id }}"/>{{ user.id }} {{ user.login }} {{ user.password }} {{ user.role }}</li>
+                <li><input name="id" type="radio" value="{{ user.id }}"/>{{ user.login }} {{ user.password }} {{ user.role }}</li>
             {% endfor %}
         </ul>
         <input type="submit" value="Видалити користувача"/>
