@@ -1,13 +1,24 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    registrants
+    Vintelecom
 {% endblock %}
 
-{% block body %}
-<ul>
-    {% for registrant in registrants %}
-        <li>{{ registrant.tel }} {{ registrant.kontakt }} {{ registrant.mobile }} {{ registrant.mail }}</li>
-    {% endfor %}
-</ul>
+{% block body %}    
+<h1>Актуальні заявки</h1>
+<form action="{{ url_for('registrants') }}" method="post">
+    <table class="table table-bordered">
+            <tr><th></th><th>Дата</th><th>Телефон</th><th>Контактна особа</th><th>Контактний телефон</th><th>Поштова скринька</th><th>Архів</th></tr>
+        {% for registrant in registrants %}
+            <tr><td><input name="id" type="radio" value="{{ registrant.id }}"/></td><td> {{ registrant.date }} </td><td> {{ registrant.tel }} </td><td> {{ registrant.kontakt }} </td><td> {{ registrant.mobile }} </td><td> {{ registrant.mail }} </td><td> {{ registrant.archiv }} </td></tr>
+        {% endfor %}
+    <table>
+    <input type="submit" value="Відправити в архів"/>
+</form>
+</form>
+    <form action="registrants_archiv">
+    <button type="submit">Архів заявок</button>
+</form>
 {% endblock %}
+
+

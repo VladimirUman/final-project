@@ -1,31 +1,33 @@
 {% extends "layout.html" %}
-{% block body %}
-  <form action="" method=post class="form-horizontal">
-    <h2>Вхід у систему управління </h2>
-    <div class="control-group">
-        <div class="controls">
-          <input type="text" id="login" name="login" class="input-xlarge"
-            placeholder="Введіть логін" required>
-        </div>
+{% block body %}    
+<form action="login" method=post class="form-horizontal">
+  <h2>Вхід у систему управління </h2>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-1 control-label">Логін</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="login" placeholder="Введіть логін">
     </div>
- 
-    <div class="control-group">
-        <div class="controls">
-          <input type="password" id="password" name="password" class="input-xlarge"
-            placeholder="Введіть пароль" required>
-        </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-1 control-label">Пароль</label>
+    <div class="col-sm-4">
+      <input type="password" class="form-control" name="password" placeholder="Введіть пароль">
     </div>
-    
-    <div class="control-group">
-        <div class="controls">
-          <input type="radio" id="remember" class="input-xlarge">Запам'ятати мене</input>
-        </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-1 col-sm-10">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="remember"> Запам'ятати мене
+        </label>
+      </div>
     </div>
- 
-    <div class="control-group">
-        <div class="controls">
-          <button type="submit" class="btn btn-success">Увійти</button>
-        </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-1 col-sm-10">
+      <button type="submit" class="btn btn-default">Увійти</button>
     </div>
-  </form>
+  </div>
+</form>
 {% endblock %}
+

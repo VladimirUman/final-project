@@ -5,15 +5,41 @@ Frosh IMs
 {% endblock %}
 
 {% block body %}
-<h1>Форма подачі заявки на підлючення Інтернет</h1>
-<form action="{{ url_for('adduser') }}" method="post">
-    <br/>
-    Логін: <input name="login" type="text"/>
-    <br/>
-    Пароль <input name="password" type="text"/>
-    <br/>
-    Роль користувача <input name="role" type="text"/>
-    <br/>
-    <input type="submit" value="Додати"/>
+<form action="{{ url_for('adduser') }}" method=post class="form-horizontal">
+  <h2>Додати користувача</h2>
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-1 control-label">Користувач</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="login" placeholder="Ім'я користувача" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-1 control-label">Пароль</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="password" placeholder="Пароль" required>
+    </div>
+  </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-1 control-label">Поштова скринька</label>
+    <div class="col-sm-4">
+      <input type="email" class="form-control" name="mail" placeholder="Поштова скринька" required>
+    </div>
+  </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-1 control-label">Роль користувача</label>
+    <div class="col-sm-4">
+      <select type="email" class="form-control" name="role">
+                  <option value="user">користувач</option>
+                  <option value="admin">адміністратор</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-1 col-sm-10">
+      <button type="submit" class="btn btn-default">Додати користувача</button>
+    </div>
+  </div>
 </form>
 {% endblock %}

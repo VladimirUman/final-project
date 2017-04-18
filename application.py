@@ -27,24 +27,28 @@ class Registrant(db.Model):
     kontakt = db.Column(db.Text)
     mobile = db.Column(db.Text)
     mail = db.Column(db.Text)
+    date = db.Column(db.Date)
+    archiv = db.Column(db.Boolean)
 
     def __init__(self, tel, kontakt, mobile, mail):
         self.tel = tel
         self.kontakt = kontakt
         self.mobile = mobile
         self.mail = mail
-        
+                
 class Users(db.Model):
 
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.Text, unique=True)
     password = db.Column(db.Text)
+    mail = db.Column(db.Text)
     role = db.Column(db.Text)
 
-    def __init__(self, login, password, role, mail):
+    def __init__(self, login, password, mail, role):
         self.login = login
         self.password = password
+        self.mail = mail
         self.role = role
         
     def get_role(self):
@@ -73,8 +77,17 @@ def required_roles(*roles):
     return wrapper
  
 @app.route("/")
+@app.route("/main")
 def main():
     return render_template("main.html")
+
+@app.route("/tarif")
+def tarif():
+    return render_template("tarif.html")
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 @app.route("/form")
 def form():
@@ -82,30 +95,28 @@ def form():
 
 @app.route("/register", methods=["POST"])
 def register():
-    if request.form["tel"] == "" or request.form["kontakt"] == "" or request.form["mobile"] == "" or request.form["mail"] == "":
-        return render_template("failure.html")
     registrant = Registrant(request.form["tel"], request.form["kontakt"], request.form["mobile"], request.form["mail"])
     db.session.add(registrant)
     db.session.commit()
     return render_template("success.html")
 
-@app.route("/registrants")
+@app.route("/registrants", methods=["GET", "POST"])
 @login_required
 def registrants():
-    rows = Registrant.query.all()
-    return render_template("registrants.html", registrants=rows)
-
-@app.route("/unregister", methods=["GET", "POST"])
-@login_required
-def unregister():
     if request.method == "GET":
         rows = Registrant.query.all()
-        return render_template("unregister.html", registrants=rows)
+        return render_template("registrants.html", registrants=rows)
     elif request.method == "POST":
         if request.form["id"]:
             Registrant.query.filter(Registrant.id == request.form["id"]).delete()
             db.session.commit()
         return redirect(url_for("registrants"))
+    
+@app.route("/registrants_archiv", methods=["GET"])
+@login_required
+def registrants_archiv():
+    rows = Registrant.query.all()
+    return render_template("registrants_archiv.html", registrants=rows)
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -118,10 +129,8 @@ def login():
         remember_me = True
     registered_user = Users.query.filter_by(login=login,password=password).first()
     if registered_user is None:
-        flash('Username or Password is invalid' , 'error')
         return redirect(url_for('login'))
     login_user(registered_user, remember = remember_me)
-    flash('Logged in successfully')
     if login == 'admin':
         return redirect(url_for('panel'))
     return redirect(url_for('unregister'))
@@ -154,12 +163,10 @@ def adduserform():
 @login_required
 @required_roles('admin')
 def adduser():
-    if request.form["login"] == "" or request.form["password"] == "":
-        return render_template("failure.html")
-    user = Users(request.form["login"], request.form["password"], request.form["role"])
+    user = Users(request.form["login"], request.form["password"], request.form["mail"], request.form["role"])
     db.session.add(user)
     db.session.commit()
-    return render_template("success.html")
+    return redirect(url_for("panel"))
 
 @login_manager.user_loader
 def load_user(id):
