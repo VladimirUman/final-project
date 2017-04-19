@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+<h2>Вітаємо! {{ g.user }}</h2>
 <form action="{{ url_for('panel') }}" method="post">
     <table class="table table-bordered">
             <tr><th></th><th>Им'я користувача/логін</th><th>Пароль</th><th>Поштова скринька</th><th>Роль користувача</th></tr>

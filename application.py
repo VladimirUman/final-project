@@ -1,9 +1,13 @@
-from flask import Flask, render_template, redirect, request, url_for, flash, g
+from flask import Flask, render_template, redirect, request, url_for, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user , logout_user , current_user , login_required
 from functools import wraps
+import datetime
 
 app = Flask(__name__)
+
+now = datetime.datetime.now()
+mydate = now.strftime("%d-%m-%Y")
 
 app.secret_key = 'super secret key'
 #app.config['SESSION_TYPE'] = 'filesystem'
@@ -27,14 +31,16 @@ class Registrant(db.Model):
     kontakt = db.Column(db.Text)
     mobile = db.Column(db.Text)
     mail = db.Column(db.Text)
-    date = db.Column(db.Date)
+    date = db.Column(db.Text)
     archiv = db.Column(db.Boolean)
 
-    def __init__(self, tel, kontakt, mobile, mail):
+    def __init__(self, tel, kontakt, mobile, mail, date, archiv):
         self.tel = tel
         self.kontakt = kontakt
         self.mobile = mobile
         self.mail = mail
+        self.date = date
+        self.archiv = archiv
                 
 class Users(db.Model):
 
@@ -95,7 +101,7 @@ def form():
 
 @app.route("/register", methods=["POST"])
 def register():
-    registrant = Registrant(request.form["tel"], request.form["kontakt"], request.form["mobile"], request.form["mail"])
+    registrant = Registrant(request.form["tel"], request.form["kontakt"], request.form["mobile"], request.form["mail"], mydate, False)
     db.session.add(registrant)
     db.session.commit()
     return render_template("success.html")
@@ -104,18 +110,19 @@ def register():
 @login_required
 def registrants():
     if request.method == "GET":
-        rows = Registrant.query.all()
+        rows = Registrant.query.filter(Registrant.archiv == False)
         return render_template("registrants.html", registrants=rows)
     elif request.method == "POST":
         if request.form["id"]:
-            Registrant.query.filter(Registrant.id == request.form["id"]).delete()
+            zayavka = Registrant.query.filter(Registrant.id == request.form["id"]).first()
+            zayavka.archiv = True
             db.session.commit()
         return redirect(url_for("registrants"))
     
 @app.route("/registrants_archiv", methods=["GET"])
 @login_required
 def registrants_archiv():
-    rows = Registrant.query.all()
+    rows = Registrant.query.filter(Registrant.archiv == True)
     return render_template("registrants_archiv.html", registrants=rows)
 
 @app.route('/login',methods=['GET','POST'])

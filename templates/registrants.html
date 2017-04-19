@@ -5,12 +5,13 @@
 {% endblock %}
 
 {% block body %}    
+<h2>Вітаємо! {{ g.user }}</h2>
 <h1>Актуальні заявки</h1>
 <form action="{{ url_for('registrants') }}" method="post">
     <table class="table table-bordered">
-            <tr><th></th><th>Дата</th><th>Телефон</th><th>Контактна особа</th><th>Контактний телефон</th><th>Поштова скринька</th><th>Архів</th></tr>
+            <tr><th></th><th>Дата</th><th>Телефон</th><th>Контактна особа</th><th>Контактний телефон</th><th>Поштова скринька</th></tr>
         {% for registrant in registrants %}
-            <tr><td><input name="id" type="radio" value="{{ registrant.id }}"/></td><td> {{ registrant.date }} </td><td> {{ registrant.tel }} </td><td> {{ registrant.kontakt }} </td><td> {{ registrant.mobile }} </td><td> {{ registrant.mail }} </td><td> {{ registrant.archiv }} </td></tr>
+            <tr><td><input name="id" type="radio" value="{{ registrant.id }}"/></td><td> {{ registrant.date }} </td><td> {{ registrant.tel }} </td><td> {{ registrant.kontakt }} </td><td> {{ registrant.mobile }} </td><td> {{ registrant.mail }} </td></tr>
         {% endfor %}
     <table>
     <input type="submit" value="Відправити в архів"/>
