@@ -205,7 +205,8 @@ def async(f):
 
 @async
 def send_async_email(msg):
-    mail.send(msg)
+    with app.app_context():
+        mail.send(msg)
 
 
 def send_email(subject, sender, recipients, text_body, html_body):
@@ -224,6 +225,5 @@ def send(recipients, kontakt, tel):
     
 
 
-if __name__ =='__main__':
-    app.run(debug=False)
+app.run(debug=True)
     
