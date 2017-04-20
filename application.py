@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user , logout_user , current_user , login_required
 from functools import wraps
 import datetime
+from flask_mail import Mail, Message
+from threading import Thread
 
 app = Flask(__name__)
 
@@ -17,6 +19,15 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///froshims3.db"
 app.config["SQLALCHEMY_ECHO"] = True
 db = SQLAlchemy(app)
+
+#mail
+app.config["MAIL_SERVER"] = 'smtp.gmail.com'
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USE_TLS"] = False
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USERNAME"] = 'vladimiruman81'
+app.config["MAIL_PASSWORD"] = 'rtktwrfz112'
+mail = Mail(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -104,6 +115,7 @@ def register():
     registrant = Registrant(request.form["tel"], request.form["kontakt"], request.form["mobile"], request.form["mail"], mydate, False)
     db.session.add(registrant)
     db.session.commit()
+    send([request.form["mail"]], request.form["kontakt"], request.form["tel"])
     return render_template("success.html")
 
 @app.route("/registrants", methods=["GET", "POST"])
@@ -140,7 +152,7 @@ def login():
     login_user(registered_user, remember = remember_me)
     if login == 'admin':
         return redirect(url_for('panel'))
-    return redirect(url_for('unregister'))
+    return redirect(url_for('registrants'))
 
 @app.route('/logout')
 def logout():
@@ -183,4 +195,35 @@ def load_user(id):
 def before_request():
     g.user = current_user
 
-app.run(debug=True)
+#mail
+
+def async(f):
+    def wrapper(*args, **kwargs):
+        thr = Thread(target = f, args = args, kwargs = kwargs)
+        thr.start()
+    return wrapper
+
+@async
+def send_async_email(msg):
+    mail.send(msg)
+
+
+def send_email(subject, sender, recipients, text_body, html_body):
+    msg = Message(subject, sender = sender, recipients = recipients)
+    msg.body = text_body
+    msg.html = html_body
+    send_async_email(msg)
+    #thr = Thread(target = send_async_email, args = [msg])
+    #thr.start()
+    
+def send(recipients, kontakt, tel):
+    sender = 'admin'
+    recipient = recipients
+    subject = "Vintelecom"
+    send_email(subject, sender, recipient, render_template("text_body.txt", user=kontakt, tel=tel), render_template("html_body.html", user=kontakt, tel=tel))
+    
+
+
+if __name__ =='__main__':
+    app.run(debug=False)
+    
