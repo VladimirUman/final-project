@@ -1,11 +1,10 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Vintelecom
+     Архівні заявки
 {% endblock %}
 
 {% block body %}
-<h2>Вітаємо! {{ g.user }}</h2>    
 <h1>Архівні заявки</h1>
 <form action="{{ url_for('registrants_archiv') }}" method="post">
     <table class="table table-bordered">
@@ -16,7 +15,7 @@
                 <th>Контактна особа</th>
                 <th>Контактний телефон</th>
                 <th>Поштова скринька</th>
-                <th>Коментарі до відпрацювання</th>
+                <th width="35%">Коментарі до відпрацювання</th>
             </tr>
         {% for registrant in registrants %}
             <tr>
@@ -25,7 +24,7 @@
                 <td> {{ registrant.kontakt }} </td>
                 <td> {{ registrant.mobile }} </td>
                 <td> {{ registrant.mail }} </td>
-                <td> 
+                <td width="35%"> 
                 {% for comment in registrant.coment.split('\n') %}
                 {{ comment }} <br>
                 {% endfor %}

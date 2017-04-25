@@ -1,11 +1,10 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Vintelecom
+    Актуальні заявки
 {% endblock %}
 
 {% block body %}    
-<h2>Вітаємо! {{ g.user }}</h2>
 <h1>Актуальні заявки</h1>
 <form action="{{ url_for('registrants') }}" method="post">
     <table class="table table-bordered">
