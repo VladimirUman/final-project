@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, redirect, request, url_for, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user , logout_user , current_user , login_required
@@ -44,14 +45,16 @@ class Registrant(db.Model):
     mail = db.Column(db.Text)
     date = db.Column(db.Text)
     archiv = db.Column(db.Boolean)
+    coment = db.Column(db.Text)
 
-    def __init__(self, tel, kontakt, mobile, mail, date, archiv):
+    def __init__(self, tel, kontakt, mobile, mail, date, archiv, coment):
         self.tel = tel
         self.kontakt = kontakt
         self.mobile = mobile
         self.mail = mail
         self.date = date
         self.archiv = archiv
+        self.coment = coment
                 
 class Users(db.Model):
 
@@ -112,10 +115,11 @@ def form():
 
 @app.route("/register", methods=["POST"])
 def register():
-    registrant = Registrant(request.form["tel"], request.form["kontakt"], request.form["mobile"], request.form["mail"], mydate, False)
+    comment = str(mydate) + ': нова заявка. ' + request.form["coment"]
+    registrant = Registrant(request.form["tel"], request.form["kontakt"], request.form["mobile"], request.form["mail"], mydate, False, comment)
     db.session.add(registrant)
     db.session.commit()
-    send([request.form["mail"]], request.form["kontakt"], request.form["tel"])
+    send(request.form["mail"], request.form["kontakt"], request.form["mobile"], request.form["tel"])
     return render_template("success.html")
 
 @app.route("/registrants", methods=["GET", "POST"])
@@ -127,15 +131,24 @@ def registrants():
     elif request.method == "POST":
         if request.form["id"]:
             zayavka = Registrant.query.filter(Registrant.id == request.form["id"]).first()
-            zayavka.archiv = True
+            comment = '\n' + str(mydate) + ': ' + request.form["coment"]
+            zayavka.coment += comment
+            if 'archiv' in request.form:
+                zayavka.archiv = True 
             db.session.commit()
         return redirect(url_for("registrants"))
     
-@app.route("/registrants_archiv", methods=["GET"])
+@app.route("/registrants_archiv", methods=["GET", "POST"])
 @login_required
 def registrants_archiv():
-    rows = Registrant.query.filter(Registrant.archiv == True)
-    return render_template("registrants_archiv.html", registrants=rows)
+    if request.method == "GET":
+        rows = Registrant.query.filter(Registrant.archiv == True)
+        return render_template("registrants_archiv.html", registrants=rows)
+    elif request.method == "POST":
+        if request.form["id"]:
+            Registrant.query.filter(Registrant.id == request.form["id"]).delete()
+            db.session.commit()
+        return redirect(url_for("registrants_archiv"))
 
 @app.route('/login',methods=['GET','POST'])
 def login():
@@ -217,12 +230,16 @@ def send_email(subject, sender, recipients, text_body, html_body):
     #thr = Thread(target = send_async_email, args = [msg])
     #thr.start()
     
-def send(recipients, kontakt, tel):
+def send(client, kontakt, mobile, tel):
     sender = 'admin'
-    recipient = recipients
+    recipient_client = [client]
+    recipient_user = []
     subject = "Vintelecom"
-    send_email(subject, sender, recipient, render_template("text_body.txt", user=kontakt, tel=tel), render_template("html_body.html", user=kontakt, tel=tel))
-    
+    send_email(subject, sender, recipient_client, render_template("text_body.txt", user=kontakt, tel=tel), render_template("html_body.html", kontakt=kontakt, tel=tel))
+    users = Users.query.filter(Users.role == 'user')
+    for user in users:
+        recipient_user.append(user.mail)
+    send_email(subject, sender, recipient_user, render_template("text_body.txt", user=kontakt, tel=tel), render_template("html_user_body.html", kontakt=kontakt, tel=tel, mobile=mobile))
 
 
 app.run(debug=True)

@@ -4,15 +4,36 @@
     Vintelecom
 {% endblock %}
 
-{% block body %}    
+{% block body %}
+<h2>Вітаємо! {{ g.user }}</h2>    
 <h1>Архівні заявки</h1>
-<form action="{{ url_for('registrants_archiv') }}" method="get">
+<form action="{{ url_for('registrants_archiv') }}" method="post">
     <table class="table table-bordered">
-            <tr><th>Дата</th><th>Телефон</th><th>Контактна особа</th><th>Контактний телефон</th><th>Поштова скринька</th></tr>
+            <tr>
+                <th></th>
+                <th>Дата</th>
+                <th>Телефон</th>
+                <th>Контактна особа</th>
+                <th>Контактний телефон</th>
+                <th>Поштова скринька</th>
+                <th>Коментарі до відпрацювання</th>
+            </tr>
         {% for registrant in registrants %}
-            <tr><td> {{ registrant.date }} </td><td> {{ registrant.tel }} </td><td> {{ registrant.kontakt }} </td><td> {{ registrant.mobile }} </td><td> {{ registrant.mail }} </td></tr>
+            <tr>
+                <td><input name="id" type="radio" value="{{ registrant.id }}"/></td>
+                <td> {{ registrant.date }} </td><td> {{ registrant.tel }} </td>
+                <td> {{ registrant.kontakt }} </td>
+                <td> {{ registrant.mobile }} </td>
+                <td> {{ registrant.mail }} </td>
+                <td> 
+                {% for comment in registrant.coment.split('\n') %}
+                {{ comment }} <br>
+                {% endfor %}
+                </td>
+            </tr>
         {% endfor %}
     </table>
+    <input type="submit" value="Видалити назавжди"/>
 </form>
 </form>
 <form action="registrants">

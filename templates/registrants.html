@@ -9,16 +9,59 @@
 <h1>Актуальні заявки</h1>
 <form action="{{ url_for('registrants') }}" method="post">
     <table class="table table-bordered">
-            <tr><th></th><th>Дата</th><th>Телефон</th><th>Контактна особа</th><th>Контактний телефон</th><th>Поштова скринька</th></tr>
+            <tr>
+                <th></th>
+                <th>Дата заявки</th>
+                <th>Телефон</th>
+                <th>Контактна особа</th>
+                <th>Контактний телефон</th>
+                <th>Поштова скринька</th>
+                <th width="35%">Коментарі до відпрацювання</th>
+            </tr>
         {% for registrant in registrants %}
-            <tr><td><input name="id" type="radio" value="{{ registrant.id }}"/></td><td> {{ registrant.date }} </td><td> {{ registrant.tel }} </td><td> {{ registrant.kontakt }} </td><td> {{ registrant.mobile }} </td><td> {{ registrant.mail }} </td></tr>
+            <tr>
+                <td><input name="id" type="radio" value="{{ registrant.id }}" checked/></td>
+                <td> {{ registrant.date }} </td>
+                <td> {{ registrant.tel }} </td>
+                <td> {{ registrant.kontakt }} </td>
+                <td> {{ registrant.mobile }} </td>
+                <td> {{ registrant.mail }} </td>
+                <td width="35%"> 
+                {% for comment in registrant.coment.split('\n') %}
+                {{ comment }} <br>
+                {% endfor %}
+                </td>
+            </tr>
         {% endfor %}
-    <table>
-    <input type="submit" value="Відправити в архів"/>
+    </table>
+   
+    <a class="btn btn-lg btn-success"
+         href="#" data-toggle="modal"
+         data-target="#basicModal">Відпрацювати заявку</a>
+      
+    <div class="modal fade" id="basicModal" tabindex="-1" role="dialog">
+     <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header"><button class="close" type="button" data-dismiss="modal">x</button>
+                 <h4 class="modal-title" id="myModalLabel">Введіть коментарі до заявки</h4>
+              </div>
+            <div class="modal-body" id="coment" style="max-height: 600px">
+              <textarea name="coment" class="input-xlarge" style="height: 170px; width: 570px; margin-bottom: -20px;" required></textarea>
+            </div>
+              <div class="modal-footer">
+                  <label>
+                  <input type="checkbox" name="archiv"> Відправити в архів
+                  </label>
+                  <input class="btn btn-primary" id="submit" type="submit" value="Додати коментар"/>
+                  <button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button>
+              </div>
+        </div>
+      </div>
+    </div>    
 </form>
-</form>
-    <form action="registrants_archiv">
-    <button type="submit">Архів заявок</button>
+
+<form action="registrants_archiv">
+    <button class="btn btn-lg btn-success" type="submit">Архів заявок</button>
 </form>
 {% endblock %}
 
