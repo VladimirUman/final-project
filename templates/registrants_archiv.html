@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block body %}
+<div class="splash">
+  <div class="container">
+
 <h1>Архівні заявки</h1>
 <form action="{{ url_for('registrants_archiv') }}" method="post">
     <table class="table table-bordered">
@@ -32,12 +35,14 @@
             </tr>
         {% endfor %}
     </table>
-    <input type="submit" value="Видалити назавжди"/>
+    <div>
+    <button class="btn btn-default" type="submit">Видалити назавжди</button>
+    <a class="btn btn-default" href="registrants">Актуальні заявки</a>
+    </div>
 </form>
-</form>
-<form action="registrants">
-<button type="submit">Актуальні заявки</button>
-</form>
+
+</div>
+</div>
 {% endblock %}
 
 

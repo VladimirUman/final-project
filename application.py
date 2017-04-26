@@ -109,6 +109,10 @@ def tarif():
 def about():
     return render_template("about.html")
 
+@app.route("/contacts")
+def contacts():
+    return render_template("contacts.html")
+
 @app.route("/form")
 def form():
     return render_template("form.html")
@@ -120,7 +124,7 @@ def register():
     db.session.add(registrant)
     db.session.commit()
     send(request.form["mail"], request.form["kontakt"], request.form["mobile"], request.form["tel"])
-    return render_template("success.html")
+    return render_template("success.html", kontakt=request.form["kontakt"], tel=request.form["tel"])
 
 @app.route("/registrants", methods=["GET", "POST"])
 @login_required
@@ -163,7 +167,7 @@ def login():
     if registered_user is None:
         return redirect(url_for('login'))
     login_user(registered_user, remember = remember_me)
-    if login == 'admin':
+    if g.user.get_role() == 'admin':
         return redirect(url_for('panel'))
     return redirect(url_for('registrants'))
 
@@ -222,9 +226,8 @@ def send_async_email(msg):
         mail.send(msg)
 
 
-def send_email(subject, sender, recipients, text_body, html_body):
+def send_email(subject, sender, recipients, html_body):
     msg = Message(subject, sender = sender, recipients = recipients)
-    msg.body = text_body
     msg.html = html_body
     send_async_email(msg)
     #thr = Thread(target = send_async_email, args = [msg])
@@ -235,11 +238,11 @@ def send(client, kontakt, mobile, tel):
     recipient_client = [client]
     recipient_user = []
     subject = "Vintelecom"
-    send_email(subject, sender, recipient_client, render_template("text_body.txt", user=kontakt, tel=tel), render_template("html_body.html", kontakt=kontakt, tel=tel))
+    send_email(subject, sender, recipient_client, render_template("html_body.html", kontakt=kontakt, tel=tel))
     users = Users.query.filter(Users.role == 'user')
     for user in users:
         recipient_user.append(user.mail)
-    send_email(subject, sender, recipient_user, render_template("text_body.txt", user=kontakt, tel=tel), render_template("html_user_body.html", kontakt=kontakt, tel=tel, mobile=mobile))
+    send_email(subject, sender, recipient_user, render_template("html_user_body.html", kontakt=kontakt, tel=tel, mobile=mobile))
 
 
 app.run(debug=True)

@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block body %}
-<h2>Вітаємо! {{ g.user }}</h2>
+<div class="splash">
+  <div class="container">
+<h1>Користувачі системи</h1>
 <form action="{{ url_for('panel') }}" method="post">
     <table class="table table-bordered">
             <tr><th></th><th>Им'я користувача/логін</th><th>Пароль</th><th>Поштова скринька</th><th>Роль користувача</th></tr>
@@ -13,9 +15,12 @@
             <tr><td><input name="id" type="radio" value="{{ user.id }}"/></td><td> {{ user.login }} </td><td> {{ user.password }} </td><td> {{ user.mail }} </td><td> {{ user.role }} </td></tr>
         {% endfor %}
     <table>
-    <input type="submit" value="Видалити користувача"/>
+    <button type="submit" class="btn btn-default">Видалити користувача</button>
 </form>
 <form action="adduserform">
-<button type="submit">Додати користувача</button>
+<button type="submit" class="btn btn-default">Додати користувача</button>
 </form>
+
+ </div>
+</div>
 {% endblock %}

@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block body %}    
+<div class="splash">
+  <div class="container">
+
 <h1>Актуальні заявки</h1>
 <form action="{{ url_for('registrants') }}" method="post">
     <table class="table table-bordered">
@@ -34,10 +37,6 @@
         {% endfor %}
     </table>
    
-    <a class="btn btn-lg btn-success"
-         href="#" data-toggle="modal"
-         data-target="#basicModal">Відпрацювати заявку</a>
-      
     <div class="modal fade" id="basicModal" tabindex="-1" role="dialog">
      <div class="modal-dialog">
           <div class="modal-content">
@@ -52,16 +51,23 @@
                   <input type="checkbox" name="archiv"> Відправити в архів
                   </label>
                   <input class="btn btn-primary" id="submit" type="submit" value="Додати коментар"/>
-                  <button class="btn btn-default" type="button" data-dismiss="modal">Закрыть</button>
+                  <button class="btn btn-default" type="button" data-dismiss="modal">Закрити</button>
+                  
               </div>
         </div>
       </div>
     </div>    
+<div>
+<a class="btn btn-default"
+         href="#" data-toggle="modal"
+         data-target="#basicModal">Відпрацювати заявку</a>
+<a class="btn btn-default" href="registrants_archiv">Архів заявок</a>         
+</div>
 </form>
+   
 
-<form action="registrants_archiv">
-    <button class="btn btn-lg btn-success" type="submit">Архів заявок</button>
-</form>
+</div>
+</div>
 {% endblock %}
 
 

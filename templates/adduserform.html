@@ -5,30 +5,31 @@ Frosh IMs
 {% endblock %}
 
 {% block body %}
+<div class="splash">
+  <div class="container">
+  
 <form action="{{ url_for('adduser') }}" method=post class="form-horizontal">
   <h2>Додати користувача</h2>
   <div class="form-group">
-    <label for="inputEmail3" class="col-sm-1 control-label">Користувач</label>
+    <label for="inputEmail3" class="col-sm-2 control-label">Користувач</label>
     <div class="col-sm-4">
       <input type="text" class="form-control" name="login" placeholder="Ім'я користувача" required>
     </div>
   </div>
   <div class="form-group">
-    <label for="inputPassword3" class="col-sm-1 control-label">Пароль</label>
+    <label for="inputPassword3" class="col-sm-2 control-label">Пароль</label>
     <div class="col-sm-4">
       <input type="text" class="form-control" name="password" placeholder="Пароль" required>
     </div>
   </div>
-  </div>
   <div class="form-group">
-    <label for="inputPassword3" class="col-sm-1 control-label">Поштова скринька</label>
+    <label for="inputPassword3" class="col-sm-2 control-label">Поштова скринька</label>
     <div class="col-sm-4">
       <input type="email" class="form-control" name="mail" placeholder="Поштова скринька" required>
     </div>
   </div>
-  </div>
   <div class="form-group">
-    <label for="inputPassword3" class="col-sm-1 control-label">Роль користувача</label>
+    <label for="inputPassword3" class="col-sm-2 control-label">Роль користувача</label>
     <div class="col-sm-4">
       <select type="email" class="form-control" name="role">
                   <option value="user">користувач</option>
@@ -37,9 +38,12 @@ Frosh IMs
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-offset-1 col-sm-10">
+    <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-default">Додати користувача</button>
     </div>
   </div>
 </form>
+
+ </div>
+</div>
 {% endblock %}
