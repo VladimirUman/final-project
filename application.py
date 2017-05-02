@@ -71,6 +71,9 @@ class Users(db.Model):
         self.mail = mail
         self.role = role
         
+    def get_login(self):
+        return self.login
+    
     def get_role(self):
         return self.role
     
@@ -123,7 +126,7 @@ def register():
     registrant = Registrant(request.form["tel"], request.form["kontakt"], request.form["mobile"], request.form["mail"], mydate, False, comment)
     db.session.add(registrant)
     db.session.commit()
-    send(request.form["mail"], request.form["kontakt"], request.form["mobile"], request.form["tel"])
+    send_msg(request.form["mail"], request.form["kontakt"], request.form["mobile"], request.form["tel"])
     return render_template("success.html", kontakt=request.form["kontakt"], tel=request.form["tel"])
 
 @app.route("/registrants", methods=["GET", "POST"])
@@ -185,8 +188,10 @@ def panel():
         return render_template("panel.html", users=rows)
     elif request.method == "POST":
         if request.form["id"]:
-            Users.query.filter(Users.id == request.form["id"]).delete()
-            db.session.commit()
+            user = Users.query.filter(Users.id == request.form["id"])
+            if request.form["id"] != '1':
+                user.delete()
+                db.session.commit()
         return redirect(url_for("panel"))
 
 @app.route("/adduserform")
@@ -233,7 +238,7 @@ def send_email(subject, sender, recipients, html_body):
     #thr = Thread(target = send_async_email, args = [msg])
     #thr.start()
     
-def send(client, kontakt, mobile, tel):
+def send_msg(client, kontakt, mobile, tel):
     sender = 'admin'
     recipient_client = [client]
     recipient_user = []
