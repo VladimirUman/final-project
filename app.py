@@ -17,7 +17,7 @@ app.secret_key = 'super secret key'
 
 # Flask-SQLAlchemy
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///froshims3.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///base.db"
 app.config["SQLALCHEMY_ECHO"] = True
 db = SQLAlchemy(app)
 
